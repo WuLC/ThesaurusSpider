@@ -13,6 +13,8 @@
 
 通过urllib2、Queue、re、threading等python自带模块实现，无依赖的第三方模块。使用时将`singleThreadDownload.py`（单线程下载）或 `multiThreadDownload.py`(多线程下载)中的主函数中的baseDir改为自己的下载路径即可运行单线程下载或多线程下载,注意baseDir末尾没有/。
 
+如果有下载不成功的文件或解析不成功的页面，在下载根目录会生成下载日志，记录这些文件和页面的URL信息，方便debug。
+
 关于实现的具体细节可参考[这篇文章][4]。
 
 [1]: http://shurufa.baidu.com/dict.html
