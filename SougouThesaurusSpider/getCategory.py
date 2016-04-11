@@ -1,4 +1,10 @@
-# encoding:utf-8
+# -*- coding: utf-8 -*-
+# @Author: LC
+# @Date:   2016-03-26 22:42:39
+# @Last modified by:   LC
+# @Last Modified time: 2016-04-11 15:22:46
+# @Email: liangchaowu5@gmail.com
+
 # 功能：提取分类ID的和对应的具体类别，以字典形式返回
 # bigCateDict 是所有大类ID及其代表内容，smallCateDict是每一类大类下的若干小类
 

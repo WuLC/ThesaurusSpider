@@ -1,4 +1,10 @@
-# encoding:utf-8
+# -*- coding: utf-8 -*-
+# @Author: LC
+# @Date:   2016-03-26 22:42:39
+# @Last modified by:   LC
+# @Last Modified time: 2016-04-11 15:22:06
+# @Email: liangchaowu5@gmail.com
+
 # 功能：下载单个QQ词库文件
 
 import urllib2

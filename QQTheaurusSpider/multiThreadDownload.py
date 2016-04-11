@@ -1,4 +1,10 @@
-# encoding:utf-8
+# -*- coding: utf-8 -*-
+# @Author: LC
+# @Date:   2016-03-26 22:42:39
+# @Last modified by:   LC
+# @Last Modified time: 2016-04-11 15:22:01
+# @Email: liangchaowu5@gmail.com
+
 # 功能：多线程下载QQ输入法词库文件,使用时把主函数中的baseDir改成自己的下载目录即可，注意baseDir末尾不能有/
 
 import threading

@@ -1,4 +1,10 @@
-# encoding:utf-8
+# -*- coding: utf-8 -*-
+# @Author: LC
+# @Date:   2016-03-26 22:42:39
+# @Last modified by:   LC
+# @Last Modified time: 2016-04-11 15:21:27
+# @Email: liangchaowu5@gmail.com
+
 # 功能：单线程下载百度词库，将主函数中的baseDir改为自己的下载路径即可运行，baseDir末尾没有/
 
 import urllib2
