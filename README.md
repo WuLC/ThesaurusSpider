@@ -17,8 +17,11 @@
 
 关于实现的具体细节可参考[这篇文章][4]。
 
+下载的词库文件并非文本格式，而是各个输入法自己定制的二进制格式，关于词库文件的解码并转为文本格式可参考[这个repository][5]。
+
 [1]: http://shurufa.baidu.com/dict.html
 [2]: http://dict.qq.pinyin.cn/
 [3]: http://pinyin.sogou.com/dict/
 [4]: http://wulc.me/2016/03/27/%E6%90%9C%E7%8B%97%E3%80%81%E7%99%BE%E5%BA%A6%E3%80%81QQ%E8%BE%93%E5%85%A5%E6%B3%95%E7%9A%84%E8%AF%8D%E5%BA%93%E7%88%AC%E8%99%AB/
+[5]: https://github.com/WuLC/ThesaurusParser
 
