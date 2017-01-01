@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: LC
 # @Date:   2016-03-26 22:42:39
-# @Last modified by:   LC
-# @Last Modified time: 2016-04-11 15:21:32
+# @Last modified by:   WuLC
+# @Last Modified time: 2017-01-01 09:56:23
 # @Email: liangchaowu5@gmail.com
 
 # 功能：获取百度词库的分类
@@ -17,8 +17,12 @@ def getBaiduDictCate():
     """
     bigCateDict = {}
     smallCateDict ={}
+    """旧版网页url，已失效
     initPageURL = r'http://shurufa.baidu.com/dict.html'
     cateBaseURL = r'http://shurufa.baidu.com/dict-list.html?cid='
+    """
+    initPageURL = r'https://shurufa.baidu.com/dict'
+    cateBaseURL = r'https://shurufa.baidu.com/dict_list?cid='
     try:
         response = urllib2.urlopen(initPageURL)
         data = response.read()
@@ -40,13 +44,19 @@ def getBaiduDictCate():
             smallData = smallResponse.read()
         except urllib2.HTTPError, e:
             print e.code
-
+        """旧版url解析,已失效
         if i[0] == '157':          # 表示城市地区的网页很特殊，需要特殊处理
             specialSmallPattern = re.compile(r'<a  href="dict-list.html\?cid=(\d+).*?category1" >(.*?)</a>')
             smallResult = re.findall(specialSmallPattern, smallData)
         else:
             smallCatePattern = re.compile(r'[^?]cid=(\d+).*?category[23]" ?>(.*?)</a>') # 将三级分类一并归到二级分类
             smallResult = re.findall(smallCatePattern,smallData)
+        for j in smallResult:
+            smallCateDict[i[0]][j[0]] = j[1]
+            #print i[0], j[0], j[1]
+        """
+        smallCatePattern = re.compile(r'<a href=.*?dict-id="(\d+)"\n.*?>(.*?)</a>') # 将三级分类一并归到二级分类
+        smallResult = re.findall(smallCatePattern,smallData)
         for j in smallResult:
             smallCateDict[i[0]][j[0]] = j[1]
             #print i[0], j[0], j[1]
