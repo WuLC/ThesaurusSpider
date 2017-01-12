@@ -12,10 +12,13 @@ import io
 import re
 import os
 import time
+import random
+from user_agent import generate_user_agent
+
 import downloadSingleFile
 import getCategory
 
-from user_agent import generate_user_agent
+
 
 def downloadSingleCate(cateID, dirName, downloadLog):
     """下载某一类别的词库
@@ -85,7 +88,12 @@ def downloadSingleCate(cateID, dirName, downloadLog):
                 print fileName+' downloading...................................................'
                 # 在 downloadSingleFile 函数中处理异常
                 downloadSingleFile.downLoadSingleFile(fileURL, fileName, dirName, downloadLog)
-                
+                # 控制爬虫爬取速度，爬完一个文件睡眠一定时间
+                time.sleep(random.randint(1,10)) 
+
+        # 控制爬虫爬取速度，爬完一个页面的文件睡眠一定时间
+        time.sleep(random.randint(10,20)) 
+        
 
     # 打印出下载某一类别所访问过的页面
     for visit in visited:
