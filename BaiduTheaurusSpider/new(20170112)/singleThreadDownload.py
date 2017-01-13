@@ -20,12 +20,13 @@ import getCategory
 
 
 
-def downloadSingleCate(cateID, dirName, downloadLog):
+def downloadSingleCate(cateID, dirName, downloadLog, tryBest = True):
     """下载某一类别的词库
 
     :param cateID: 类别ID
     :param dirName: 下载的目录
-    :parm downloadLog:下载日志，记录下载不成功的文件
+    :parm downloadLog: 下载日志，记录下载不成功的文件
+    :parm downloadLog: 是否达到最大尝试次数
     :return: None
     """
     pageBaseUrl = r'https://shurufa.baidu.com/dict_list?cid=%s' %cateID
@@ -45,14 +46,29 @@ def downloadSingleCate(cateID, dirName, downloadLog):
     headers['User-Agent'] = userAgent
     headers['Referer'] = referrer
 
-    # 找到最大页的页码，然后从1开始遍历
-    request = urllib2.Request(url=pageBaseUrl, headers=headers)
-    response = urllib2.urlopen(request)
-    data = response.read()
+    # 找到最大页的页码，然后所有页面就是1到最大页面
+    try:
+        request = urllib2.Request(url=pageBaseUrl, headers=headers)
+        response = urllib2.urlopen(request)
+        data = response.read()
+    except urllib2.HTTPError, e:
+        if tryBest:
+            with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
+                f.write((str(e.code)+' error while parsing url '+pageBaseUrl+'\n').decode('utf8'))
+        return False
+    except:
+        if tryBest:
+            with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
+                f.write(('unexpected error while parsing url '+pageBaseUrl+'\n').decode('utf8'))
+        return False
+
     pageResult = re.findall(pagePattern, data)
     maxPage = 1 if len(pageResult) == 0 else max(map(lambda x:int(x), pageResult))
 
-    for page in xrange(1, maxPage+1):
+    # 需要爬取的页面
+    pageSet = set(range(1, maxPage+1))
+    while pageSet:
+        page = random.sample(pageSet, 1)[0] # 随机取一个页面进行抓取
         currentURL = pageBaseUrl + '&page=%s#page'%page
         if currentURL in visited:
             continue
@@ -63,11 +79,12 @@ def downloadSingleCate(cateID, dirName, downloadLog):
             request = urllib2.Request(url=currentURL, headers=headers)
             response = urllib2.urlopen(request)
             data = response.read()
+            pageSet.remove(page) # 下载成功就把页面丛集合里面删除
         except urllib2.HTTPError, e:
             with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
                 f.write((str(e.code)+' error while parsing url '+currentURL+'\n').decode('utf8'))
+            continue
         except:
-            print 'unexcepted error'
             with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
                 f.write(('unexpected error while parsing url '+currentURL+'\n').decode('utf8'))
             continue
@@ -87,17 +104,26 @@ def downloadSingleCate(cateID, dirName, downloadLog):
                 downloaded.add(fileURL)
                 print fileName+' downloading...................................................'
                 # 在 downloadSingleFile 函数中处理异常
-                downloadSingleFile.downLoadSingleFile(fileURL, fileName, dirName, downloadLog)
+                # 假如下载失败会再次尝试，最多三次
+                maxTry = 3
+                for i in xrange(maxTry):
+                    tryBest = False if i < maxTry-1 else True
+                    if downloadSingleFile.downLoadSingleFile(fileURL, fileName, dirName, downloadLog, tryBest):
+                        break
+                    print '==========retrying to download file %s of url %s'%(fileName, fileURL) 
                 # 控制爬虫爬取速度，爬完一个文件睡眠一定时间
-                time.sleep(random.randint(1,10)) 
+                #time.sleep(random.randint(1,10)) 
 
         # 控制爬虫爬取速度，爬完一个页面的文件睡眠一定时间
-        time.sleep(random.randint(10,20)) 
+        #time.sleep(random.randint(10,20)) 
         
 
     # 打印出下载某一类别所访问过的页面
+    """
     for visit in visited:
         print visit
+    """
+    return True
 
 if __name__ == '__main__':
     start = time.time()
@@ -108,11 +134,17 @@ if __name__ == '__main__':
     downloadSingleCate(218, downloadDir, downloadLog)
     '''
     baseDir = 'D:/百度输入法/单线程下载'
+    #baseDir = '/home/ThesaurusSpider/baidu/singleThread'
     downloadLog = baseDir+'/download.log'
     bigCateDict, smallCateDict = getCategory.getBaiduDictCate()
-    for i in bigCateDict:
-        for j in smallCateDict[i]:
+    for i in bigCateDict.keys():
+        for j in smallCateDict[i].keys():
             downloadDir = baseDir+'/%s/%s/' %(bigCateDict[i],smallCateDict[i][j])
-            downloadSingleCate(j, downloadDir, downloadLog)
+            # 最大尝试次数
+            maxTry = 3
+            for m in xrange(maxTry):
+                tryBest = False if m < maxTry - 1 else True
+                if downloadSingleCate(j, downloadDir, downloadLog, tryBest):
+                    break
     print 'process time:%s' % (time.time() - start)
     

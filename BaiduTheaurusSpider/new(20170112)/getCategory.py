@@ -8,8 +8,10 @@
 # 功能：获取百度词库的分类
 
 import sys
+import random
 import urllib2
 import re
+from user_agent import generate_user_agent
 
 def getBaiduDictCate():
     """
@@ -22,7 +24,7 @@ def getBaiduDictCate():
     cateBaseURL = r'https://shurufa.baidu.com/dict_list?cid='
 
     # 防止502错误
-    userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2526.111 Safari/537.36'
+    userAgent = generate_user_agent()
     referrer = 'http://shurufa.baidu.com/dict.html'  
     headers = {}
     headers['User-Agent'] = userAgent
@@ -41,16 +43,19 @@ def getBaiduDictCate():
     result = re.findall(bigCatePattern, data)
     for i in result:
         bigCateDict[i[0]] = i[2]  # 一个大类
-        #print bigCateID, i[2]
+        #print i[0], i[2]
 
-    # 抓取大类下对应的小类
-    for bigCateID in bigCateDict.keys():   
+    # 抓取大类下对应的小类, 遇到 502 重复进行请求
+    bigCateSet = set(bigCateDict.keys())
+    while bigCateSet:
+        bigCateID = random.sample(bigCateSet,1)[0]
         smallCateDict[bigCateID] = {}
         smallCateURL = cateBaseURL+bigCateID
         try:
             request = urllib2.Request(url=smallCateURL, headers=headers)
             smallResponse = urllib2.urlopen(request)
             smallData = smallResponse.read()
+            bigCateSet.remove(bigCateID)
         except urllib2.HTTPError, e:
             print 'Error code:',e.code
             continue

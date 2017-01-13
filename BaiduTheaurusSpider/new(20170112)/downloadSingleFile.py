@@ -10,14 +10,15 @@
 import io
 import urllib2
 
-def downLoadSingleFile(url, fileName, downloadDir, downloadLog):
+def downLoadSingleFile(url, fileName, downloadDir, downloadLog, tryBest = True):
     """
     功能：下载单个词库文件
     :param url: 词库文件的url地址
     :param fileName: 词库文件的文件名
     :param downloadDir: 词库文件的下载目录
     :param downloadLog: 下载日志，记录下载不成功的记录
-    :return:None
+    :param tryBest: 是否达到尝试的最大次数，默认为1次，以此作为是否写日志的依据
+    :return:boolean: 表示文件是否成功下载，便于调用的程序尝试重复下载
     """
     userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36'
     referrer = 'http://shurufa.baidu.com/dict.html'  # 百度词库貌似没有防盗链,但这里为了保险还是在请求时带上referer
@@ -33,12 +34,17 @@ def downLoadSingleFile(url, fileName, downloadDir, downloadLog):
         print filePath
         with open(filePath.decode('utf8'), 'wb') as f:  # 保存中文文件名所必须的
             f.write(data)
+        return True
     except urllib2.HTTPError, e:
-        with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
-            f.write((str(e.code)+'error while downloading file ' + fileName + 'of URL '+url+'\n').decode('utf8'))
+        if tryBest: # 达到尝试的最大次数还不成功才写入日志
+            with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
+                f.write((str(e.code)+'error while downloading file ' + fileName + 'of URL '+url+'\n').decode('utf8'))
+        return False
     except:
-        with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
-            f.write(('unexpected error while downloading file ' + fileName + 'of URL '+url+'\n').decode('utf8'))
+        if tryBest:
+            with io.open(downloadLog.decode('utf8'), mode = 'a', encoding = 'utf8') as f:
+                f.write(('unexpected error while downloading file ' + fileName + 'of URL '+url+'\n').decode('utf8'))
+        return False
 
 if __name__ == '__main__':
     url = 'https://shurufa.baidu.com/dict_innerid_download?innerid=2000030'
