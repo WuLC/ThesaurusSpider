@@ -30,7 +30,7 @@
 
 2.对于返回500,502错误码的反爬虫措施，通过**重新进行请求**解决，因为百度词库在返回500或502后会返回一个200，所以实际上并不是服务器出问题，更像是为了反爬而以一定概率出现这类状态码
 
-注意：因为百度输入法采取了一定的反爬虫措施，为了降低返回502,500错误的几率，请求的 `user-agent` 不再固定，而是采用第三方库`user-agent` 生成，使用前需要先通过`easy_install user-agent`或`pip install user-agent`安装。
+注意：因为百度输入法采取了一定的反爬虫措施，为了降低返回502,500错误的几率，请求的 `user-agent` 不再固定，而是采用第三方库`user-agent` 生成，**使用前需要先通过`easy_install user-agent`或`pip install user-agent`安装**。
 
 [1]: http://shurufa.baidu.com/dict.html
 [2]: http://dict.qq.pinyin.cn/
