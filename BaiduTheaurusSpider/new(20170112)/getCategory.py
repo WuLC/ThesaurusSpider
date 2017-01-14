@@ -60,16 +60,17 @@ def getBaiduDictCate():
             print 'Error code:',e.code
             continue
         
+        # \s 表示不可见字符(包括空格，tab，换行符等)
         if bigCateID == "157": # 城市区划的页面很特殊，需要特殊处理
-            smallCatePattern = re.compile(r'cid=(\d+)(.|\n)*?category1">((.|\n)*?)</a>')
+            smallCatePattern = re.compile(r'<a\s*href="/dict_list\?cid.*?cid=(\d+)\s*data-stats="webDictListPage.category1">(.*?)\s*</a>')
         else:
-            smallCatePattern = re.compile(r'cid=(\d+)(.|\n)*?category2">((.|\n)*?)</a>')
-
+            #smallCatePattern = re.compile(r'<a.*?href="/dict_list\?cid=(\d+)(.|\n)*?category2">((.|\n)*?)</a>')
+            smallCatePattern = re.compile(r'<a\s*href="/dict_list\?cid.*?cid=(\d+)\s*data-stats="webDictListPage.category2">(.*?)\s*</a>')
         smallResult = re.findall(smallCatePattern, smallData)
         for j in smallResult:
             if bigCateID == "157" and j[0] in bigCateDict: # 防止找城市区划下面的子分类的时候将其他的一级分类都找出来
                 continue
-            smallCateDict[bigCateID][j[0]] = j[2].strip()
+            smallCateDict[bigCateID][j[0]] = j[1].strip()
             #print '\t', j[0], j[2].strip()
     return bigCateDict, smallCateDict
     

@@ -68,9 +68,11 @@ def downloadSingleCate(cateID, dirName, downloadLog, tryBest = True):
     # 需要爬取的页面
     pageSet = set(range(1, maxPage+1))
     while pageSet:
+        print 'not downloaded pages:',pageSet
         page = random.sample(pageSet, 1)[0] # 随机取一个页面进行抓取
         currentURL = pageBaseUrl + '&page=%s#page'%page
         if currentURL in visited:
+            pageSet.remove(page)
             continue
         else:
             visited.add(currentURL)
