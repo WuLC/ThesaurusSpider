@@ -19,6 +19,7 @@
 
 下载的词库文件并非文本格式，而是各个输入法自己定制的二进制格式，关于词库文件的解码并转为文本格式可参考[这个repository][5]。
 
+PULL Request
 [1]: http://shurufa.baidu.com/dict.html
 [2]: http://dict.qq.pinyin.cn/
 [3]: http://pinyin.sogou.com/dict/
