@@ -2,7 +2,7 @@
 # @Author: LC
 # @Date:   2016-03-26 22:42:39
 # @Last modified by:   LC
-# @Last Modified time: 2016-04-11 15:22:37
+# @Last Modified time: 2017-07-17 22:52:49
 # @Email: liangchaowu5@gmail.com
 
 # 功能：下载搜狗输入法单个词库文件
@@ -48,9 +48,14 @@ def downLoadSingleFile(url,dir,logFile):
     filename = urllib.unquote(fileStr)
     filename = filename.replace('/', '-')
     filePath = dir + filename + '.scel'   # 需要将文件名中的/替换，否则报错
-    with open(filePath.decode('utf8'), 'wb') as f:  # 保存中文文件名所必须的
-        f.write(data)
-    print filePath+' has downloaded!'
+    try:
+        with open(filePath.decode('utf8'), 'wb') as f:  # 保存中文文件名所必须的
+            f.write(data)
+        print filePath+' has downloaded!'
+    except:
+        with open(logFile.decode('utf8'), 'a') as f:
+            f.write('unexcepted error while downloading file of '+url+'\n')
+        return 
 
 
 if __name__ ==  '__main__':
