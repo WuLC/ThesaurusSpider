@@ -95,7 +95,7 @@ class downloadThread(threading.Thread):
                 finally:
                     lock.release()
 
-                print self.name + ' is downloading' + fileURL+'.......'
+                print self.name + ' is downloading ' + fileURL+' .......'
                 downloadSingleFile.downLoadSingleFile(fileURL, DIR, DOWNLOADLOG)
             QUEUE.task_done()   # Queue.join()阻塞直到所有任务完成，也就是说要收到从QUEUE中取出的每个item的task_done消息
 
@@ -111,7 +111,7 @@ def downloadSingleCate(caterotyID,downloadDIR):
     """
     global CATEID, DIR, PageBaseURL, FileBaseURL, PagePattern, FilePattern, QUEUE
     CATEID = caterotyID
-    DIR = downloadDIR   
+    DIR = downloadDIR
     PageBaseURL = 'http://pinyin.sogou.com/dict/cate/index/%s' % CATEID
     FileBaseURL = 'http://download.pinyin.sogou.com'
     PagePattern = re.compile(r'href="/dict/cate/index/%s/default(.*?)"' % CATEID)  # 非贪婪匹配,查找跳转到其他页面的url
@@ -122,9 +122,10 @@ def downloadSingleCate(caterotyID,downloadDIR):
 if __name__ == '__main__':
     start = time.time()
     bigCateDict, smallCateDict = getCategory.getSogouDictCate()
-    baseDir = 'G:/搜狗词库/多线程下载'
+    # baseDir = 'G:/搜狗词库/多线程下载'
+    baseDir = './sogou_dicts_chinese'
     DOWNLOADLOG = baseDir+'/sougouDownload.log'
-    threadNum = 5    # 下载的线程数目
+    threadNum = 20    # 下载的线程数目
     lock = threading.Lock()
     for i in range(threadNum):
         th = downloadThread()

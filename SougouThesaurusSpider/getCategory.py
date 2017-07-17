@@ -54,7 +54,7 @@ if __name__ == '__main__':
     for i in bigCateDict:
         for j in smallCateDict[i]:
             print i, bigCateDict[i], j, smallCateDict[i][j]
-            
+
 
 
 
