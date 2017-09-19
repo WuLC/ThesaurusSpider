@@ -66,7 +66,7 @@ def downloadSingleCate(cateID,dir,logFile):
                 downloaded.append(fileURL)
             print fileURL+' downloading.......'
             downloadSingleFile.downLoadSingleFile(fileURL, dir, logFile)
-            
+
 
     for visit in visited:
         print visit
@@ -74,7 +74,7 @@ def downloadSingleCate(cateID,dir,logFile):
 if __name__ == '__main__':
     start = time.time()
     bigCateDict, smallCateDict = getCategory.getSogouDictCate()
-    baseDir = 'G:/搜狗词库/单线程下载'
+    baseDir = './sogou_dicts_single_thread2'
     logFile = baseDir+'/download.log'
     for i in bigCateDict:
         for j in smallCateDict[i]:

@@ -2,11 +2,12 @@
 # @Author: LC
 # @Date:   2016-03-26 22:42:39
 # @Last modified by:   LC
-# @Last Modified time: 2016-04-11 15:22:37
+# @Last Modified time: 2017-07-17 22:52:49
 # @Email: liangchaowu5@gmail.com
 
 # 功能：下载搜狗输入法单个词库文件
 
+import urllib
 import urllib2
 import re
 
@@ -17,7 +18,7 @@ def downLoadSingleFile(url,dir,logFile):
     :param dir: 本地的存放目录
     :return: None
     """
-    
+
     userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36'
     referrer = 'http://pinyin.sogou.com/dict/cate/index/'
     headers = {}
@@ -36,16 +37,25 @@ def downLoadSingleFile(url,dir,logFile):
     except urllib2.HTTPError, e:
         with open(logFile.decode('utf8'), 'a') as f:
             f.write(str(e.code)+' error while downloading file of '+url+'\n')
+        return
     except:
         with open(logFile.decode('utf8'), 'a') as f:
             f.write('unexcepted error while downloading file of '+url+'\n')
+        return
 
     data = response.read()
     fileStr = re.findall('name=(.*)$', url)[0]
-    filePath = dir+fileStr.replace('/', '-')+'.scel'   # 需要将文件名中的/替换，否则报错
-    with open(filePath.decode('utf8'), 'wb') as f:  # 保存中文文件名所必须的
-        f.write(data)
-    print filePath+' is diwnloaded!'
+    filename = urllib.unquote(fileStr)
+    filename = filename.replace('/', '-')
+    filePath = dir + filename + '.scel'   # 需要将文件名中的/替换，否则报错
+    try:
+        with open(filePath.decode('utf8'), 'wb') as f:  # 保存中文文件名所必须的
+            f.write(data)
+        print filePath+' has downloaded!'
+    except:
+        with open(logFile.decode('utf8'), 'a') as f:
+            f.write('unexcepted error while downloading file of '+url+'\n')
+        return 
 
 
 if __name__ ==  '__main__':
